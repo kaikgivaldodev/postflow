@@ -84,10 +84,9 @@ export async function signupAction(
   });
 
   if (error) {
-    // Supabase retorna erro específico apenas para violações óbvias
-    // (senha fraca, etc); para "usuário já existe" o Supabase já responde
-    // de forma genérica quando "Confirm email" está ativo.
-    return { error: "Não foi possível concluir o cadastro. Tente novamente." };
+    // DEBUG TEMPORÁRIO — expõe o erro real do Supabase pra diagnosticar.
+    // Reverter para mensagem genérica assim que o bug for identificado.
+    return { error: `[DEBUG ${error.status ?? "?"}] ${error.message}` };
   }
 
   return {
