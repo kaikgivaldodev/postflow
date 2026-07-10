@@ -71,7 +71,7 @@ export async function signupAction(
   const supabase = await createClient();
   const appUrl = await getAppUrl();
 
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
     options: {
@@ -84,9 +84,19 @@ export async function signupAction(
   });
 
   if (error) {
-    // DEBUG TEMPORÁRIO — expõe o erro real do Supabase pra diagnosticar.
-    // Reverter para mensagem genérica assim que o bug for identificado.
-    return { error: `[DEBUG ${error.status ?? "?"}] ${error.message}` };
+    if (error.status === 422) {
+      return {
+        error: "Este email já está cadastrado. Faça login ou recupere sua senha.",
+      };
+    }
+    return { error: "Não foi possível concluir o cadastro. Tente novamente." };
+  }
+
+  // Se o projeto Supabase tiver "Confirm email" desativado, signUp() já
+  // retorna uma sessão ativa — nesse caso loga direto em vez de pedir
+  // confirmação por email que nunca vai chegar.
+  if (data.session) {
+    redirect("/dashboard");
   }
 
   return {
