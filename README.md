@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PostFlow
 
-## Getting Started
+Ferramenta de agendamento de posts para Instagram. Ver
+`../POSTFLOW_MASTER_BLUEPRINT.md` para o blueprint completo do produto.
 
-First, run the development server:
+## Status atual
+
+Implementado até aqui (seção 16 do blueprint, passos 1–4):
+
+1. ✅ Setup Next.js 14 (App Router) + Tailwind CSS + shadcn/ui (Radix UI)
+2. ✅ Schema do Supabase + RLS (`supabase/migrations/0001_init.sql`)
+3. ✅ Auth completo: login, cadastro, recuperação/redefinição de senha,
+   botão de login com Google (requer configurar o provider no Supabase)
+4. ✅ Landing page completa (hero, prova social, como funciona, recursos,
+   preços com toggle mensal/anual, FAQ, CTA final, footer, banner de cookies)
+   + páginas legais (Termos, Privacidade, Cookies)
+
+Também já aplicados: headers de segurança (`next.config.mjs`), tokens de
+design da seção 3 (`app/globals.css`) e a estrutura de pastas da seção 13.
+
+Ainda não implementado (próximos passos do blueprint): conexão OAuth com o
+Instagram, formulário/calendário de posts, cron de publicação, integração
+SyncPay, emails transacionais, rate limiting com Upstash, fluxo LGPD de
+exportar/excluir dados.
+
+## Setup
+
+### 1. Instalar dependências
+
+```bash
+npm install
+```
+
+### 2. Configurar o Supabase
+
+1. Crie um projeto em [supabase.com](https://supabase.com).
+2. No SQL Editor do projeto, rode o conteúdo de
+   `supabase/migrations/0001_init.sql` (cria todas as tabelas, triggers e
+   políticas de RLS da seção 4 do blueprint).
+3. Em **Authentication → URL Configuration**, defina a Site URL como
+   `http://localhost:3000` (ou seu domínio em produção) e adicione
+   `http://localhost:3000/auth/callback` em Redirect URLs.
+4. (Opcional) Em **Authentication → Providers**, ative o provider **Google**
+   para o botão "Continuar com Google" funcionar.
+5. Copie `Project URL`, `anon public key` e `service_role key` (Settings →
+   API) para o `.env.local`.
+
+### 3. Variáveis de ambiente
+
+Copie `.env.local.example` e preencha com suas credenciais reais:
+
+```bash
+cp .env.local.example .env.local
+```
+
+Um `.env.local` com valores placeholder já está incluso para permitir rodar
+`npm run build`/`npm run dev` sem credenciais reais — mas o Auth só funciona
+de verdade com um projeto Supabase configurado.
+
+### 4. Rodar em desenvolvimento
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abra [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Next.js 14 (App Router) · TypeScript · Tailwind CSS · shadcn/ui (Radix UI) ·
+React Hook Form + Zod · TanStack Query · Zustand · Supabase (Postgres + Auth
++ Storage) · `@supabase/ssr` para auth no App Router.
 
-## Learn More
+## Estrutura
 
-To learn more about Next.js, take a look at the following resources:
+Ver seção 13 do blueprint. Principais pastas:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `app/(landing)` — site público (home, preços, páginas legais)
+- `app/(auth)` — login, cadastro, recuperação de senha
+- `app/(app)` — área logada (protegida pelo `middleware.ts`)
+- `app/api` — API routes (posts, Instagram, webhooks, cron)
+- `lib/supabase` — clients browser/server/admin + middleware de sessão
+- `lib/actions/auth.ts` — Server Actions de autenticação
+- `supabase/migrations` — schema SQL + RLS
