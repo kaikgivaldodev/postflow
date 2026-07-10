@@ -22,9 +22,9 @@ const FAQ_ITEMS = [
       "Sim. Você pode cancelar sua assinatura a qualquer momento em Configurações → Assinatura, sem multas ou taxas de cancelamento.",
   },
   {
-    question: "O que acontece quando o trial acaba?",
+    question: "O plano Gratuito é grátis para sempre?",
     answer:
-      "Ao final dos 14 dias, você pode escolher um plano pago para continuar usando todos os recursos, ou seguir no plano Gratuito com limites reduzidos. Seus dados e posts agendados são mantidos.",
+      "Sim. O plano Gratuito não expira — você pode usar o PostFlow indefinidamente dentro dos limites dele. Quando precisar de mais posts, contas ou recursos, faça upgrade para um plano pago quando quiser.",
   },
   {
     question: "Meus dados ficam seguros?",

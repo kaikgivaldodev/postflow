@@ -127,7 +127,7 @@ export function SignupForm() {
       </div>
 
       <SubmitButton pendingText="Criando conta...">
-        Começar grátis por 14 dias
+        Criar conta grátis
       </SubmitButton>
 
       <p className="text-center text-xs text-muted-foreground">

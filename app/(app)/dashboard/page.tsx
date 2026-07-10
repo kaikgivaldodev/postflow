@@ -41,7 +41,7 @@ export default async function DashboardPage() {
               {profile?.plan_id ?? "free"}
             </p>
             <p className="text-sm text-muted-foreground capitalize">
-              {profile?.plan_status ?? "trial"}
+              {profile?.plan_status ?? "active"}
             </p>
           </CardContent>
         </Card>

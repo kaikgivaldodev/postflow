@@ -14,7 +14,7 @@ export default function SignupPage() {
       <div className="space-y-1 text-center">
         <h1 className="text-2xl font-semibold tracking-tight">Criar sua conta</h1>
         <p className="text-sm text-muted-foreground">
-          14 dias grátis no plano Pro. Sem cartão de crédito.
+          Comece a agendar seus posts gratuitamente. Sem cartão de crédito.
         </p>
       </div>
 

@@ -11,8 +11,8 @@ export function FinalCTA() {
             Comece hoje. Cancele quando quiser.
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-balance text-white/90">
-            14 dias de trial no plano Pro, sem cartão de crédito. Agende seu
-            primeiro post em menos de 5 minutos.
+            Comece grátis, sem cartão de crédito. Agende seu primeiro post em
+            menos de 5 minutos.
           </p>
           <div className="mt-8">
             <Button size="lg" variant="secondary" className="bg-white text-foreground hover:bg-white/90" asChild>
