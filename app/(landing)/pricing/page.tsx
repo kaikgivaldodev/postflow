@@ -4,7 +4,7 @@ import { FAQ } from "@/components/landing/faq";
 
 export const metadata: Metadata = {
   title: "Preços",
-  description: "Conheça os planos do PostFlow: Gratuito, Starter, Pro e Agência.",
+  description: "PostFlow: um único plano de R$37,90/mês com tudo liberado. 7 dias grátis.",
 };
 
 export default function PricingPage() {

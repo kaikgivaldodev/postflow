@@ -15,7 +15,7 @@ export function Hero() {
       <div className="mx-auto max-w-4xl px-4 pb-20 pt-20 text-center sm:pt-28">
         <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-muted-foreground">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-          Comece grátis — sem cartão de crédito
+          7 dias grátis, depois R$37,90/mês — sem pegadinha
         </div>
 
         <h1 className="text-balance text-4xl font-semibold tracking-tight sm:text-6xl">
@@ -33,7 +33,7 @@ export function Hero() {
         <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Button size="lg" className="w-full sm:w-auto" asChild>
             <Link href="/signup">
-              Começar grátis
+              Testar 7 dias grátis
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>

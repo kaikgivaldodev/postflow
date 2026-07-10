@@ -1,8 +1,10 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { hasActiveAccess } from "@/lib/plan";
 
 const PROTECTED_PREFIXES = ["/dashboard", "/calendar", "/posts", "/analytics", "/settings"];
 const AUTH_PREFIXES = ["/login", "/signup", "/forgot-password", "/reset-password"];
+const BILLING_PATH = "/settings/billing";
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
@@ -46,6 +48,20 @@ export async function updateSession(request: NextRequest) {
 
   if (user && isAuthPage) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
+  // Paywall: trial de 7 dias expirado sem assinatura ativa bloqueia o app
+  // inteiro, exceto a própria página de assinatura (senão vira loop).
+  if (user && isProtected && pathname !== BILLING_PATH) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("plan_status, trial_ends_at")
+      .eq("id", user.id)
+      .single();
+
+    if (profile && !hasActiveAccess(profile)) {
+      return NextResponse.redirect(new URL(BILLING_PATH, request.url));
+    }
   }
 
   return supabaseResponse;

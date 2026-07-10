@@ -12,7 +12,7 @@ export type Json =
 
 export type PostType = "feed" | "story" | "reel" | "carousel";
 export type PostStatus = "draft" | "scheduled" | "published" | "failed";
-export type PlanId = "free" | "starter" | "pro" | "agency";
+export type PlanId = "pro";
 export type PlanStatus = "active" | "inactive" | "trial" | "cancelled";
 export type SubscriptionStatus = "active" | "past_due" | "cancelled" | "trialing";
 export type MediaType = "image" | "video";
@@ -25,6 +25,8 @@ export interface Database {
           id: string;
           full_name: string | null;
           avatar_url: string | null;
+          phone: string | null;
+          cpf: string | null;
           plan_id: PlanId;
           plan_status: PlanStatus;
           timezone: string;
@@ -63,7 +65,7 @@ export interface Database {
         Row: {
           id: string;
           user_id: string;
-          account_id: string;
+          account_id: string | null;
           post_type: PostType;
           caption: string | null;
           hashtags: string[];
@@ -77,7 +79,6 @@ export interface Database {
         };
         Insert: Partial<Database["public"]["Tables"]["scheduled_posts"]["Row"]> & {
           user_id: string;
-          account_id: string;
           post_type: PostType;
           scheduled_at: string;
         };

@@ -1,17 +1,21 @@
 "use client";
 
 import { useFormState } from "react-dom";
+import { useState } from "react";
 import Link from "next/link";
 import { signupAction, type ActionState } from "@/lib/actions/auth";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { SubmitButton } from "@/components/auth/submit-button";
+import { formatCPF, formatPhone } from "@/lib/validations/cpf";
 
 const initialState: ActionState = {};
 
 export function SignupForm() {
   const [state, formAction] = useFormState(signupAction, initialState);
+  const [phone, setPhone] = useState("");
+  const [cpf, setCpf] = useState("");
 
   if (state.success) {
     return (
@@ -62,6 +66,42 @@ export function SignupForm() {
         />
         {state.fieldErrors?.email && (
           <p className="text-sm text-destructive">{state.fieldErrors.email[0]}</p>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="phone">Telefone</Label>
+        <Input
+          id="phone"
+          name="phone"
+          type="tel"
+          inputMode="numeric"
+          autoComplete="tel"
+          placeholder="(11) 91234-5678"
+          value={phone}
+          onChange={(e) => setPhone(formatPhone(e.target.value))}
+          required
+        />
+        {state.fieldErrors?.phone && (
+          <p className="text-sm text-destructive">{state.fieldErrors.phone[0]}</p>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="cpf">CPF</Label>
+        <Input
+          id="cpf"
+          name="cpf"
+          type="text"
+          inputMode="numeric"
+          autoComplete="off"
+          placeholder="000.000.000-00"
+          value={cpf}
+          onChange={(e) => setCpf(formatCPF(e.target.value))}
+          required
+        />
+        {state.fieldErrors?.cpf && (
+          <p className="text-sm text-destructive">{state.fieldErrors.cpf[0]}</p>
         )}
       </div>
 

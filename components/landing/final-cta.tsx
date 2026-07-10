@@ -11,13 +11,13 @@ export function FinalCTA() {
             Comece hoje. Cancele quando quiser.
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-balance text-white/90">
-            Comece grátis, sem cartão de crédito. Agende seu primeiro post em
-            menos de 5 minutos.
+            7 dias grátis, depois R$37,90/mês com tudo liberado. Agende seu
+            primeiro post em menos de 5 minutos.
           </p>
           <div className="mt-8">
             <Button size="lg" variant="secondary" className="bg-white text-foreground hover:bg-white/90" asChild>
               <Link href="/signup">
-                Criar conta grátis
+                Testar 7 dias grátis
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>

@@ -31,7 +31,7 @@ const FEATURES = [
   {
     icon: BarChart3,
     title: "Analytics de desempenho",
-    description: "Acompanhe alcance e engajamento direto no PostFlow (planos pagos).",
+    description: "Acompanhe alcance e engajamento direto no PostFlow.",
   },
   {
     icon: ShieldCheck,

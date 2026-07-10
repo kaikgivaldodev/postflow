@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isValidCPF, isValidPhone, normalizeCPF, normalizePhone } from "@/lib/validations/cpf";
 
 export const loginSchema = z.object({
   email: z.string().trim().min(1, "Informe seu email").email("Email inválido"),
@@ -11,6 +12,18 @@ export const signupSchema = z
   .object({
     fullName: z.string().trim().min(2, "Informe seu nome completo").max(100),
     email: z.string().trim().min(1, "Informe seu email").email("Email inválido"),
+    phone: z
+      .string()
+      .trim()
+      .min(1, "Informe seu telefone")
+      .refine(isValidPhone, "Telefone inválido")
+      .transform(normalizePhone),
+    cpf: z
+      .string()
+      .trim()
+      .min(1, "Informe seu CPF")
+      .refine(isValidCPF, "CPF inválido")
+      .transform(normalizeCPF),
     password: z
       .string()
       .min(8, "A senha deve ter no mínimo 8 caracteres")

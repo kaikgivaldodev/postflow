@@ -22,9 +22,14 @@ const FAQ_ITEMS = [
       "Sim. Você pode cancelar sua assinatura a qualquer momento em Configurações → Assinatura, sem multas ou taxas de cancelamento.",
   },
   {
-    question: "O plano Gratuito é grátis para sempre?",
+    question: "Quanto custa o PostFlow?",
     answer:
-      "Sim. O plano Gratuito não expira — você pode usar o PostFlow indefinidamente dentro dos limites dele. Quando precisar de mais posts, contas ou recursos, faça upgrade para um plano pago quando quiser.",
+      "Um único plano de R$37,90/mês com tudo liberado: posts ilimitados, contas ilimitadas e todos os recursos. Sem pegadinha, sem níveis escondidos.",
+  },
+  {
+    question: "Como funciona o período gratuito?",
+    answer:
+      "Você tem 7 dias grátis com acesso completo ao PostFlow assim que cria sua conta. Depois desse período, é necessário assinar por R$37,90/mês para continuar usando.",
   },
   {
     question: "Meus dados ficam seguros?",

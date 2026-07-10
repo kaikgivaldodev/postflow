@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import {
   loginSchema,
   signupSchema,
@@ -58,6 +59,8 @@ export async function signupAction(
   const parsed = signupSchema.safeParse({
     fullName: formData.get("fullName"),
     email: formData.get("email"),
+    phone: formData.get("phone"),
+    cpf: formData.get("cpf"),
     password: formData.get("password"),
     confirmPassword: formData.get("confirmPassword"),
     acceptedTerms: formData.get("acceptedTerms") === "on",
@@ -66,6 +69,26 @@ export async function signupAction(
 
   if (!parsed.success) {
     return { fieldErrors: parsed.error.flatten().fieldErrors };
+  }
+
+  // Checa duplicidade de CPF/telefone antes de criar a conta — precisa do
+  // client admin (service role) pois a linha em profiles ainda não existe
+  // e RLS bloquearia essa busca pro client anônimo.
+  const admin = createAdminClient();
+  const { data: existing } = await admin
+    .from("profiles")
+    .select("cpf, phone")
+    .or(`cpf.eq.${parsed.data.cpf},phone.eq.${parsed.data.phone}`);
+
+  if (existing?.some((row) => row.cpf === parsed.data.cpf)) {
+    return {
+      fieldErrors: { cpf: ["Este CPF já está cadastrado."] },
+    };
+  }
+  if (existing?.some((row) => row.phone === parsed.data.phone)) {
+    return {
+      fieldErrors: { phone: ["Este telefone já está cadastrado."] },
+    };
   }
 
   const supabase = await createClient();
@@ -78,6 +101,8 @@ export async function signupAction(
       emailRedirectTo: `${appUrl}/auth/callback`,
       data: {
         full_name: parsed.data.fullName,
+        phone: parsed.data.phone,
+        cpf: parsed.data.cpf,
         marketing_opt_in: parsed.data.marketingOptIn,
       },
     },
@@ -164,22 +189,4 @@ export async function signOutAction() {
   const supabase = await createClient();
   await supabase.auth.signOut();
   redirect("/login");
-}
-
-export async function signInWithGoogleAction() {
-  const supabase = await createClient();
-  const appUrl = await getAppUrl();
-
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "google",
-    options: {
-      redirectTo: `${appUrl}/auth/callback`,
-    },
-  });
-
-  if (error || !data.url) {
-    redirect("/login?error=oauth");
-  }
-
-  redirect(data.url);
 }

@@ -1,8 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { Logo } from "@/components/layout/logo";
-import { signOutAction } from "@/lib/actions/auth";
-import { Button } from "@/components/ui/button";
+import { AppSidebar } from "@/components/layout/app-sidebar";
 
 export default async function AppLayout({
   children,
@@ -19,23 +17,9 @@ export default async function AppLayout({
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-border">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-          <Logo />
-          <div className="flex items-center gap-4">
-            <span className="hidden text-sm text-muted-foreground sm:inline">
-              {user.email}
-            </span>
-            <form action={signOutAction}>
-              <Button type="submit" variant="outline" size="sm">
-                Sair
-              </Button>
-            </form>
-          </div>
-        </div>
-      </header>
-      <main className="mx-auto max-w-6xl px-4 py-8">{children}</main>
+    <div className="flex min-h-screen bg-background">
+      <AppSidebar userEmail={user.email ?? ""} />
+      <main className="flex-1 overflow-y-auto px-6 py-8 sm:px-10">{children}</main>
     </div>
   );
 }
