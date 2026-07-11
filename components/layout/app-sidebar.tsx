@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Calendar, Settings, Plus, LogOut } from "lucide-react";
+import { LayoutDashboard, Calendar, AtSign, Settings, Plus, LogOut } from "lucide-react";
 import { Logo } from "@/components/layout/logo";
 import { Button } from "@/components/ui/button";
 import { signOutAction } from "@/lib/actions/auth";
@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 const NAV_LINKS = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/calendar", label: "Calendário", icon: Calendar },
+  { href: "/settings/accounts", label: "Contas", icon: AtSign },
   { href: "/settings/billing", label: "Configurações", icon: Settings },
 ];
 

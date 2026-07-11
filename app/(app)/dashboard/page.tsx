@@ -114,6 +114,14 @@ export default async function DashboardPage() {
           <CardContent>
             <p className="text-2xl font-semibold">{accountsCount ?? 0}</p>
             <p className="text-sm text-muted-foreground">Instagram</p>
+            {(accountsCount ?? 0) === 0 && (
+              <Link
+                href="/settings/accounts"
+                className="mt-1 inline-block text-xs font-medium text-primary hover:underline"
+              >
+                Conectar conta →
+              </Link>
+            )}
           </CardContent>
         </Card>
       </div>

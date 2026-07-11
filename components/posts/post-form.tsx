@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useFormState } from "react-dom";
 import { useState } from "react";
 import { createPostAction, updatePostAction } from "@/lib/actions/posts";
@@ -16,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { SubmitButton } from "@/components/auth/submit-button";
 import { MediaDropzone, type MediaItem } from "@/components/posts/media-dropzone";
+import { inferMediaType } from "@/lib/media";
 
 const initialState: ActionState = {};
 
@@ -59,7 +61,7 @@ export function PostForm({ accounts, post }: PostFormProps) {
     (post?.media_urls ?? []).map((url) => ({
       url,
       path: url,
-      type: /\.(mp4|mov|webm)$/i.test(url) ? "video" : "image",
+      type: inferMediaType(url),
     }))
   );
 
@@ -163,8 +165,11 @@ export function PostForm({ accounts, post }: PostFormProps) {
             </Select>
           ) : (
             <p className="rounded-md border border-border bg-secondary/50 px-3 py-2 text-xs text-muted-foreground">
-              Nenhuma conta conectada ainda. Você pode salvar como rascunho e
-              conectar uma conta do Instagram depois em Configurações.
+              Nenhuma conta conectada ainda. Você pode salvar como rascunho e{" "}
+              <Link href="/settings/accounts" className="underline underline-offset-2 hover:text-foreground">
+                conectar uma conta do Instagram
+              </Link>{" "}
+              depois.
             </p>
           )}
         </div>
