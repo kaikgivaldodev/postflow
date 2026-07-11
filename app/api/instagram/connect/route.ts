@@ -12,14 +12,14 @@ export async function GET(request: NextRequest) {
   }
 
   const state = crypto.randomBytes(24).toString("hex");
-  const authUrl = new URL("https://www.facebook.com/v21.0/dialog/oauth");
+  const authUrl = new URL("https://www.instagram.com/oauth/authorize");
   authUrl.searchParams.set("client_id", process.env.META_APP_ID!);
   authUrl.searchParams.set("redirect_uri", process.env.META_REDIRECT_URI!);
   authUrl.searchParams.set("state", state);
   authUrl.searchParams.set("response_type", "code");
   authUrl.searchParams.set(
     "scope",
-    "pages_show_list,pages_read_engagement,instagram_basic,instagram_content_publish"
+    "instagram_business_basic,instagram_business_content_publish"
   );
 
   const response = NextResponse.redirect(authUrl);

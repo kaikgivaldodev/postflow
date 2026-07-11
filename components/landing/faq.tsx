@@ -14,7 +14,7 @@ const FAQ_ITEMS = [
   {
     question: "Funciona com contas pessoais e empresariais?",
     answer:
-      "O PostFlow funciona com contas do Instagram conectadas a uma Página do Facebook (contas comerciais/criador). É um requisito da própria API do Instagram para publicação automática.",
+      "O PostFlow funciona com contas comerciais ou de criador de conteúdo do Instagram. É um requisito da própria API do Instagram para publicação automática.",
   },
   {
     question: "Posso cancelar quando quiser?",

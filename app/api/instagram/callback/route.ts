@@ -3,7 +3,6 @@ import { createClient } from "@/lib/supabase/server";
 import {
   exchangeCodeForUserToken,
   exchangeForLongLivedUserToken,
-  listUserPagesWithInstagram,
   getInstagramProfile,
 } from "@/lib/meta-api/auth";
 import { encrypt } from "@/lib/encryption";
@@ -41,24 +40,24 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const { accessToken: shortLived } = await exchangeCodeForUserToken(
+    const { accessToken: shortLived, igUserId } = await exchangeCodeForUserToken(
       code,
       process.env.META_REDIRECT_URI!
     );
-    const { accessToken: longLivedUserToken } = await exchangeForLongLivedUserToken(shortLived);
-    const pages = await listUserPagesWithInstagram(longLivedUserToken);
-    const pagesWithIg = pages.filter((p) => p.instagram_business_account);
+    const { accessToken: longLivedToken } = await exchangeForLongLivedUserToken(shortLived);
 
-    if (pagesWithIg.length === 0) {
-      return redirectWithClearedCookie(request, "/settings/accounts?error=no_ig_account");
-    }
-
-    const [{ data: profile }, { count: currentCount }] = await Promise.all([
+    const [{ data: profile }, { count: currentCount }, { data: existing }] = await Promise.all([
       supabase.from("profiles").select("plan_id").eq("id", user.id).single(),
       supabase
         .from("instagram_accounts")
         .select("id", { count: "exact", head: true })
         .eq("user_id", user.id),
+      supabase
+        .from("instagram_accounts")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("ig_user_id", igUserId)
+        .maybeSingle(),
     ]);
 
     const { data: limits } = await supabase
@@ -68,27 +67,24 @@ export async function GET(request: NextRequest) {
       .single();
     const maxAccounts = limits?.max_instagram_accounts ?? -1;
 
-    let connected = 0;
-    for (const page of pagesWithIg) {
-      const igUserId = page.instagram_business_account!.id;
-      if (maxAccounts !== -1 && (currentCount ?? 0) + connected >= maxAccounts) break;
-
-      const profileInfo = await getInstagramProfile(igUserId, page.access_token);
-      const { error } = await supabase.from("instagram_accounts").upsert(
-        {
-          user_id: user.id,
-          ig_user_id: igUserId,
-          ig_username: profileInfo.username,
-          access_token: encrypt(page.access_token),
-          profile_picture_url: profileInfo.profile_picture_url ?? null,
-        },
-        { onConflict: "user_id,ig_user_id" }
-      );
-      if (!error) connected++;
+    if (!existing && maxAccounts !== -1 && (currentCount ?? 0) >= maxAccounts) {
+      return redirectWithClearedCookie(request, "/settings/accounts?error=limit_reached");
     }
 
-    if (connected === 0) {
-      return redirectWithClearedCookie(request, "/settings/accounts?error=limit_reached");
+    const profileInfo = await getInstagramProfile(igUserId, longLivedToken);
+    const { error } = await supabase.from("instagram_accounts").upsert(
+      {
+        user_id: user.id,
+        ig_user_id: igUserId,
+        ig_username: profileInfo.username,
+        access_token: encrypt(longLivedToken),
+        profile_picture_url: profileInfo.profile_picture_url ?? null,
+      },
+      { onConflict: "user_id,ig_user_id" }
+    );
+
+    if (error) {
+      return redirectWithClearedCookie(request, "/settings/accounts?error=unknown");
     }
     return redirectWithClearedCookie(request, "/settings/accounts?success=1");
   } catch {

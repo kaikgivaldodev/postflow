@@ -11,8 +11,6 @@ export const metadata: Metadata = {
 const ERROR_MESSAGES: Record<string, string> = {
   oauth_denied: "Você cancelou a conexão com o Instagram.",
   oauth_state_mismatch: "A sessão de conexão expirou. Tente novamente.",
-  no_ig_account:
-    "Nenhuma conta profissional do Instagram foi encontrada nas suas páginas do Facebook. Verifique se sua conta do Instagram é Business/Criador de conteúdo e está vinculada a uma página do Facebook.",
   limit_reached: "Limite de contas conectadas atingido para o seu plano.",
   token_exchange_failed: "Não foi possível concluir a conexão com o Instagram. Tente novamente.",
   unknown: "Algo deu errado ao conectar sua conta. Tente novamente.",
@@ -63,8 +61,8 @@ export default async function AccountsPage({
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Sua conta do Instagram precisa ser do tipo Business ou Criador de conteúdo e estar
-            vinculada a uma página do Facebook.
+            Sua conta do Instagram precisa ser do tipo Business ou Criador de conteúdo. Você vai
+            fazer login diretamente com sua conta do Instagram.
           </p>
           <Button asChild>
             <a href="/api/instagram/connect">Conectar conta do Instagram</a>
