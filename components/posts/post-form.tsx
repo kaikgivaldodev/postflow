@@ -57,6 +57,9 @@ export function PostForm({ accounts, post }: PostFormProps) {
   const [state, formAction] = useFormState(action, initialState);
 
   const [caption, setCaption] = useState(post?.caption ?? "");
+  const [scheduledAt, setScheduledAt] = useState(
+    post ? toDatetimeLocal(post.scheduled_at) : ""
+  );
   const [media, setMedia] = useState<MediaItem[]>(
     (post?.media_urls ?? []).map((url) => ({
       url,
@@ -136,11 +139,18 @@ export function PostForm({ accounts, post }: PostFormProps) {
       <div className="grid gap-6 sm:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="scheduledAt">Data e hora</Label>
+          {/* Hidden field sends UTC ISO string to server — avoids timezone offset bug */}
+          <input
+            type="hidden"
+            name="scheduledAt"
+            value={scheduledAt ? new Date(scheduledAt).toISOString() : ""}
+          />
           <Input
             id="scheduledAt"
-            name="scheduledAt"
+            name="_scheduledAtLocal"
             type="datetime-local"
-            defaultValue={post ? toDatetimeLocal(post.scheduled_at) : ""}
+            value={scheduledAt}
+            onChange={(e) => setScheduledAt(e.target.value)}
             required
           />
           {state.fieldErrors?.scheduledAt && (
