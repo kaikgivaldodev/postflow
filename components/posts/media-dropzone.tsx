@@ -12,6 +12,32 @@ type MediaItem = {
   type: "image" | "video";
 };
 
+function convertToJpeg(file: File): Promise<File> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) { URL.revokeObjectURL(url); reject(new Error("Canvas não suportado")); return; }
+      ctx.drawImage(img, 0, 0);
+      canvas.toBlob(
+        (blob) => {
+          URL.revokeObjectURL(url);
+          if (!blob) { reject(new Error("Falha ao converter imagem")); return; }
+          resolve(new File([blob], file.name.replace(/\.[^.]+$/, ".jpg"), { type: "image/jpeg" }));
+        },
+        "image/jpeg",
+        0.95
+      );
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Falha ao carregar imagem")); };
+    img.src = url;
+  });
+}
+
 export function MediaDropzone({
   value,
   onChange,
@@ -35,8 +61,11 @@ export function MediaDropzone({
         if (!user) throw new Error("Sessão expirada");
 
         const uploaded: MediaItem[] = [];
-        for (const file of acceptedFiles) {
-          const ext = file.name.split(".").pop();
+        for (const rawFile of acceptedFiles) {
+          const file = rawFile.type.startsWith("image/") && rawFile.type !== "image/jpeg"
+            ? await convertToJpeg(rawFile)
+            : rawFile;
+          const ext = file.type === "image/jpeg" ? "jpg" : file.name.split(".").pop();
           const path = `${user.id}/${crypto.randomUUID()}.${ext}`;
           const { error: uploadError } = await supabase.storage
             .from("post-media")
