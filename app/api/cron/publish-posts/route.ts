@@ -147,6 +147,18 @@ async function advancePost(
         error_message: null,
       })
       .eq("id", post.id);
+
+    const storagePaths = post.media_urls
+      .map((url) => {
+        const marker = "/post-media/";
+        const idx = url.indexOf(marker);
+        return idx !== -1 ? url.slice(idx + marker.length) : null;
+      })
+      .filter((p): p is string => p !== null);
+    if (storagePaths.length > 0) {
+      await supabase.storage.from("post-media").remove(storagePaths);
+    }
+
     return "published";
   } catch (error) {
     if (isTransientGraphError(error)) {

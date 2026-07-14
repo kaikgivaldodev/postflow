@@ -14,7 +14,7 @@ export function parseGraphErrorToPortuguese(error: unknown): string {
     return "Permissão insuficiente para publicar nesta conta. Reconecte a conta em Configurações.";
   }
   if (code === 100) {
-    return "O Instagram rejeitou a mídia enviada (formato ou dimensões inválidas).";
+    return `O Instagram rejeitou a mídia enviada (formato ou dimensões inválidas). Detalhe: ${message}`;
   }
   if (code === 4 || code === 17 || code === 32) {
     return "Limite de requisições do Instagram atingido — tentaremos novamente na próxima execução.";
